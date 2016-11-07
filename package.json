@@ -1,0 +1,29 @@
+{
+  "name": "arduinoserial",
+  "version": "1.0.0",
+  "description": "Connect Ibeacon with arduino and websocket",
+  "main": "listports.js",
+  "dependencies": {
+    "serialport": "^4.0.5",
+    "ws": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hadnazzar/IBeaconArduinoWebSocket.git"
+  },
+  "keywords": [
+    "Ibeacon",
+    "arduino",
+    "websocket"
+  ],
+  "author": "Hadnazzar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hadnazzar/IBeaconArduinoWebSocket/issues"
+  },
+  "homepage": "https://github.com/hadnazzar/IBeaconArduinoWebSocket#readme"
+}

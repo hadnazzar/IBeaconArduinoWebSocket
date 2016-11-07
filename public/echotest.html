@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script  type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/addons/p5.dom.js"></script>
+  
+</head>
+<body>
+<div id="data-values-area">
+<div id="readDataDiv">
+</div>
+<div id="readDecibelDiv">
+</div>
+<div id="distanceCalcDiv">
+</div>
+</div>
+</body>
+</html>
+
+<style>
+#data-values-area{
+width:400px;
+height:300px;
+background-color:black;
+color:white;
+}
+
+</style>
+
+<script type="text/javascript">
+  var myText;		// variable for the text div you'll create
+  var socket = new WebSocket("ws://localhost:8081");
+  var connected = false;
+  var inData;
+  var lastSecond;
+  var readDataArea;
+  var txCalibratedPower = -65;
+  var decibelValue;
+  var distance;
+  function setup() {
+    createCanvas(300, 100);
+    // The socket connection needs two event listeners:
+    socket.onopen = openSocket;
+    socket.onmessage = showData;
+    // make a new div and position it at 10, 10:
+    myText = createDiv("Sensor reading:");
+    //myText.position(10,10);
+  }
+  function openSocket() {
+    //myText.html("Socket open");
+    //socket.send("Hello server");
+    connected = true;
+  }
+function draw() {
+  // black background, white text:
+  background(0);
+  fill(255);
+  // display the incoming serial data as a string:
+  text("incoming value: " + inData, 30, 30);
+  if (second() !== lastSecond && connected) {
+    var outByte = second();
+    //socket.send(outByte);
+    //println("second: " + outByte);
+    lastSecond = outByte;
+  }
+}
+  /*
+  showData(), below, will get called whenever there is new Data
+  from the server. So there's no need for a draw() function:
+  */
+  function showData(result) {
+    inData = result.data;        // convert result to an integer
+    println(inData);
+	readDataArea = document.getElementById("readDataDiv");
+	readDecibelArea = document.getElementById("readDecibelDiv")
+	readDataArea.innerHTML = "";
+	readDecibelArea.innerHTML = "";
+	readDataArea.append(inData.substr(0,inData.length));
+	readDecibelArea.append("Decibel Value: " + inData.substr(7,inData.length));
+	decibelValue = inData.substr(7,inData.length);
+	getRange(txCalibratedPower,decibelValue);
+  }
+  
+  function getRange(txCalibratedPower, rssi) {
+    var ratio_db = txCalibratedPower - rssi;
+    var ratio_linear = Math.pow(10, ratio_db / 10);
+
+    var distance = Math.sqrt(ratio_linear);
+    //return distance;
+	distance = parseFloat(Math.round(distance * 10000) / 10000).toFixed(5);
+	
+	
+	distanceCalcArea = document.getElementById("distanceCalcDiv")
+	distanceCalcArea.innerHTML = "";
+	distanceCalcArea.append("Distance : " + distance + " meter");
+	
+	
+}
+ 
+  
+</script>
